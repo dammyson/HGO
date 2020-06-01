@@ -54,7 +54,6 @@ export default class Dashboard extends Component {
 
     getEventsRequest() {
         const { data, user } = this.state
-console.warn(user)
 
 
         fetch(URL.url + 'events', {

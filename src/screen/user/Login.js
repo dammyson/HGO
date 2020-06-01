@@ -143,11 +143,20 @@ export default class Login extends Component {
           AsyncStorage.setItem('data', JSON.stringify(res));
           AsyncStorage.setItem('bal', this.currencyFormat(res.balance));
           AsyncStorage.setItem('social', JSON.stringify(social));
+          AsyncStorage.setItem('role', res.user.role);
+          AsyncStorage.setItem('token', res.token);
+          AsyncStorage.setItem('user', res.user);
+
           if(social){
             this._updateProfileRequest(res)
           }else{
             AsyncStorage.setItem('user', JSON.stringify(res.user));
-            Actions.home();
+            if(res.user.role == 'Customer'){
+              Actions.home({type: 'replace'});
+             }else{
+              Actions.merchant_home({type: 'replace'});
+             }
+
           }
         } else {
           Alert.alert('Login failed', res.message, [{ text: 'Okay' }])
@@ -185,7 +194,11 @@ export default class Login extends Component {
        if (res.status) {
          this.setState({ loading: false })
          AsyncStorage.setItem('user', JSON.stringify(res.user));
-        Actions.home();
+         if(res.user.role == 'Customer'){
+          Actions.home({type: 'replace'});
+         }else{
+          Actions.merchant_home({type: 'replace'});
+         }
        } else {
          Alert.alert('Login failed', res.message, [{ text: 'Okay' }])
          this.setState({ loading: false })

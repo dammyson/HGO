@@ -82,7 +82,7 @@ export default class Category extends Component {
                 loading: false,
                
               })
-              Actions.home(Actions.home());
+            this.goHome();
             } else {
               Alert.alert('Process failed', res.message, [{ text: 'Okay' }])
               this.setState({ loading: false })
@@ -95,6 +95,21 @@ export default class Category extends Component {
         
 
     }
+
+
+    goHome(){
+        AsyncStorage.getItem('role').then((value) => {
+          if (value == '') { } else {
+             if(value == 'Customer'){
+              Actions.home({type: 'replace'});
+             }else{
+              Actions.merchant_home({type: 'replace'});
+             }
+          }
+  
+         
+      })
+       } 
 
 
     getEventsRequest() {

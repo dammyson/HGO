@@ -46,6 +46,10 @@ export default class Register extends Component {
     
   }
 
+  currencyFormat(n) {
+    return  n.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+ }
+
   _isSignedIn = async () => {
     const isSignedIn = await GoogleSignin.isSignedIn();
     if (isSignedIn) {
@@ -139,6 +143,10 @@ export default class Register extends Component {
           this.setState({ loading: false })
           AsyncStorage.setItem('login', 'true');
           AsyncStorage.setItem('data', JSON.stringify(res));
+          AsyncStorage.setItem('bal', this.currencyFormat(res.balance));
+          AsyncStorage.setItem('social', JSON.stringify(false));
+          AsyncStorage.setItem('role', res.user.role);
+          AsyncStorage.setItem('token', res.token);
           Actions.category();
         } else {
           Alert.alert('Login failed', res.message, [{ text: 'Okay' }])
@@ -184,6 +192,9 @@ export default class Register extends Component {
           AsyncStorage.setItem('login', 'true');
           AsyncStorage.setItem('data', JSON.stringify(res));
           AsyncStorage.setItem('bal', this.currencyFormat(res.balance));
+          AsyncStorage.setItem('social', JSON.stringify(false));
+          AsyncStorage.setItem('role', res.user.role);
+          AsyncStorage.setItem('token', res.token);
           Actions.category();
         } else {
           Alert.alert('Registration failed', res.message, [{ text: 'Okay' }])

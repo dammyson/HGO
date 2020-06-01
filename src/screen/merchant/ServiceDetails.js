@@ -24,18 +24,16 @@ export default class ServiceDetails extends Component {
         super(props);
 
         this.state = {
-            loading: false,
-            dataone: [
-            ],
-            datatwo: [5, 7, 9, 0, 8, 8, 8, 9
-            ],
+            loading: true,
             data: '',
+            agent_list:[],
             nodata: false,
             slider1ActiveSlide: 0,
             selected: null,
             user: {},
-            searchText: '',
-            bal: 0
+            details: {},
+            bal: 0,
+            id: '',
         };
     }
 
@@ -43,13 +41,14 @@ export default class ServiceDetails extends Component {
 
 
     componentDidMount() {
+        this.setState({ id: this.props.id });
         AsyncStorage.getItem('data').then((value) => {
             if (value == '') { } else {
                 this.setState({ data: JSON.parse(value) })
                 this.setState({ user: JSON.parse(value).user })
             }
 
-            // this.getEventsRequest()
+             this.getEventsRequest()
         })
 
         AsyncStorage.getItem('bal').then((value) => {
@@ -58,14 +57,16 @@ export default class ServiceDetails extends Component {
             }
         })
     }
-
+    currencyFormat(n) {
+        return  n.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+     }
 
     getEventsRequest() {
-        const { data, user } = this.state
+        const { data, user, id } = this.state
         console.warn(user)
 
 
-        fetch(URL.url + 'events', {
+        fetch(URL.url + 'merchant/dashboard/'+id, {
             method: 'GET', headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -77,9 +78,9 @@ export default class ServiceDetails extends Component {
                 console.warn(res);
                 if (res.status) {
                     this.setState({
-                        dataone: res.data.trending,
-
-                        loading: false
+                        details: res.data,
+                        loading: false,
+                        agent_list:  res.data.agentList,
                     })
                 } else {
                     this.setState({
@@ -103,6 +104,7 @@ export default class ServiceDetails extends Component {
 
     render() {
 
+
         if (this.state.loading) {
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000000' }}>
@@ -116,7 +118,7 @@ export default class ServiceDetails extends Component {
         }
 
 
-        const { slider1ActiveSlide } = this.state;
+         const { details } = this.state
         var left = (
             <Left style={{ flex: 1 }}>
                 <Button transparent onPress={() => Actions.pop()}>
@@ -145,7 +147,7 @@ export default class ServiceDetails extends Component {
         return (
             <Container style={{ backgroundColor: color.secondary_color }}>
 
-                <Navbar left={left} right={right} title="Home" bg='#101023' />
+                <Navbar left={left} right={right} title={details.title} bg='#101023' />
                 <Content>
                     <View style={styles.container}>
                         <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" />
@@ -176,18 +178,18 @@ export default class ServiceDetails extends Component {
                             <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 10, marginRight: 15 }}>
                                 <View style={{ flex: 1.4, }}>
                                     <Text style={{ marginLeft: 2, color: '#fff', fontSize: 12, fontWeight: '200', opacity: 0.67, }}>Gross Sale </Text>
-                                    <Text style={{ color: '#fff', fontSize: 24, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>₦670,000</Text>
+                                    <Text style={{ color: '#fff', fontSize: 24, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>₦{this.currencyFormat(details.dashboard.grossSale)}</Text>
 
                                     <Text style={{ marginLeft: 2, color: '#fff', fontSize: 10, fontWeight: '200', opacity: 0.67, marginTop: 35 }}>Your Money </Text>
-                                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>₦645,000</Text>
+                                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>₦{ this.currencyFormat(details.dashboard.amount)}</Text>
                                 </View>
                                 <View style={{ flex: 1, borderLeftWidth: 1, paddingLeft: 10, borderLeftColor: '#808080' }}>
 
                                     <Text style={{ marginLeft: 2, color: '#fff', fontSize: 12, fontWeight: '200', opacity: 0.67, }}>Tickets Sold (pcs) </Text>
-                                    <Text style={{ color: '#fff', fontSize: 24, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>174</Text>
+                                    <Text style={{ color: '#fff', fontSize: 24, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>{details.dashboard.ticketsSold}</Text>
 
                                     <Text style={{ marginLeft: 2, color: '#fff', fontSize: 10, fontWeight: '200', opacity: 0.67, marginTop: 35 }}>Tickets Left </Text>
-                                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>64</Text>
+                                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '200', fontFamily: 'NunitoSans-Bold', marginTop: 10 }}>{details.dashboard.ticketsLeft}</Text>
                                 </View>
                             </View>
                             <View style={{ flexDirection: 'row', marginLeft: 10, marginRight: 15, justifyContent: 'center' }}>
@@ -196,15 +198,16 @@ export default class ServiceDetails extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-
+                        {this.state.agent_list.length ?  
                         <View style={{ marginLeft: 25, marginRight: 7, marginTop: 10, alignItems: 'flex-start' }}>
                             <Text style={styles.titleText}>AGENTS</Text>
                         </View>
+                        :null}
                         <View style={styles.agent_content}>
 
                             <ScrollView  >
 
-                                {this.renderItem(this.state.datatwo)}
+                                {this.renderItem(this.state.agent_list)}
 
                             </ScrollView>
                         </View>

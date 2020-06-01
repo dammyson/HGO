@@ -19,9 +19,6 @@ export default class step2 extends Component {
       data: '',
       count:140,
       title:'',
-     
-      
-
     };
   }
 

@@ -20,6 +20,7 @@ import Register from '../../screen/user/Register';
 import EngagementStart from '../../screen/engagement/EngagementStart'
 import Intro from '../../screen/onboarding/Intro';
 import Home from '../../screen/engagement/Home';
+import MerchantHome from '../../screen/merchant/MerchantHome';
 import Profile from '../../screen/user/Profile';
 import Dashboard from '../../screen/dashboard/DashBoard';
 import CreateEvent from '../../screen/event/CreatEvent';
@@ -52,8 +53,9 @@ import Details from '../../screen/restaurant/Details';
 import ReserveTable from '../../screen/restaurant/ReserveTable';
 import Tables from '../../screen/restaurant/Tables';
 import More from '../../screen/restaurant/More';
-import MerchantDashboard from '../../screen/dashboard/MerchantDashboard';
-import ServiceDetails from '../../screen/dashboard/ServiceDetails';
+import MerchantDashboard from '../../screen/merchant/MerchantDashboard';
+import ServiceDetails from '../../screen/merchant/ServiceDetails';
+import Services from '../../screen/merchant/Services';
 
 
 ''
@@ -92,6 +94,7 @@ export default class Main extends Component {
             <Scene key='engagement' component={EngagementStart} hideNavBar />
             <Scene key='intro' component={Intro} hideNavBar />
             <Scene key='home' component={Home} hideNavBar />
+            <Scene key='merchant_home' component={MerchantHome} hideNavBar />
             <Scene key='profile' component={Profile} hideNavBar />
             <Scene key='dashboard' component={Dashboard} hideNavBar />
             <Scene key='glogin' component={Glogin} hideNavBar />
@@ -124,7 +127,8 @@ export default class Main extends Component {
             <Scene key='moreR' component={More} hideNavBar />
 
             <Scene key='merchant_dashboard' component={MerchantDashboard} hideNavBar />
-            <Scene key='service' component={ServiceDetails} hideNavBar />
+            <Scene key='service_details' component={ServiceDetails} hideNavBar />
+            <Scene key='services' component={Services} hideNavBar />
 
 
           </Scene>
